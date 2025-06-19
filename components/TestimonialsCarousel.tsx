@@ -3,13 +3,18 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
 import { testimonials } from '@/lib/data';
+import { honeyTestimonials } from '@/lib/honey-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 export default function TestimonialsCarousel() {
+  const { currentTheme, themeId } = useTheme();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [itemsPerSlide, setItemsPerSlide] = useState(4);
+
+  const testimonialList = themeId === 'honey' ? honeyTestimonials : testimonials;
 
   useEffect(() => {
     const updateItemsPerSlide = () => {
@@ -32,15 +37,15 @@ export default function TestimonialsCarousel() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => {
-        const maxSlides = Math.ceil(testimonials.length / itemsPerSlide);
+        const maxSlides = Math.ceil(testimonialList.length / itemsPerSlide);
         return (prev + 1) % maxSlides;
       });
     }, 4000);
 
     return () => clearInterval(timer);
-  }, [itemsPerSlide]);
+  }, [itemsPerSlide, testimonialList.length]);
 
-  const maxSlides = Math.ceil(testimonials.length / itemsPerSlide);
+  const maxSlides = Math.ceil(testimonialList.length / itemsPerSlide);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % maxSlides);
@@ -52,15 +57,15 @@ export default function TestimonialsCarousel() {
 
   const getCurrentTestimonials = () => {
     const startIndex = currentSlide * itemsPerSlide;
-    return testimonials.slice(startIndex, startIndex + itemsPerSlide);
+    return testimonialList.slice(startIndex, startIndex + itemsPerSlide);
   };
 
   return (
-    <section className="bg-gradient-to-r from-orange-100 to-yellow-100 py-16 px-4">
+    <section className={`${currentTheme.gradients.secondary} py-16 px-4`}>
       <div className="container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">What Our Customers Say</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <h2 className={`text-4xl font-bold text-${currentTheme.colors.text} mb-4`}>What Our Customers Say</h2>
+          <p className={`text-xl text-${currentTheme.colors.textSecondary} max-w-2xl mx-auto`}>
             Don't just take our word for it - hear from our satisfied customers across Bangladesh
           </p>
         </div>
@@ -71,7 +76,7 @@ export default function TestimonialsCarousel() {
             {getCurrentTestimonials().map((testimonial, index) => (
               <Card 
                 key={`${testimonial.id}-${currentSlide}`} 
-                className="bg-white/80 backdrop-blur-sm border-orange-200/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-in slide-in-from-bottom-4 duration-500"
+                className={`${currentTheme.gradients.card} border-${currentTheme.colors.border} shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-in slide-in-from-bottom-4 duration-500`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <CardContent className="p-6 text-center">
@@ -80,7 +85,7 @@ export default function TestimonialsCarousel() {
                       src={testimonial.avatar}
                       alt={testimonial.name}
                       fill
-                      className="rounded-full object-cover border-4 border-orange-200"
+                      className={`rounded-full object-cover border-4 border-${currentTheme.colors.border}`}
                     />
                   </div>
                   
@@ -90,13 +95,13 @@ export default function TestimonialsCarousel() {
                     ))}
                   </div>
                   
-                  <p className="text-gray-600 text-sm mb-4 italic">
+                  <p className={`text-${currentTheme.colors.textSecondary} text-sm mb-4 italic`}>
                     "{testimonial.comment}"
                   </p>
                   
                   <div>
-                    <h4 className="font-bold text-gray-800">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-500">{testimonial.location}</p>
+                    <h4 className={`font-bold text-${currentTheme.colors.text}`}>{testimonial.name}</h4>
+                    <p className={`text-sm text-${currentTheme.colors.textSecondary}`}>{testimonial.location}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -135,8 +140,8 @@ export default function TestimonialsCarousel() {
                   onClick={() => setCurrentSlide(index)}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
                     index === currentSlide
-                      ? 'bg-orange-500 scale-125'
-                      : 'bg-orange-300 hover:bg-orange-400'
+                      ? `bg-${currentTheme.colors.accent} scale-125`
+                      : `bg-${currentTheme.colors.accent}/30 hover:bg-${currentTheme.colors.accent}/50`
                   }`}
                 />
               ))}

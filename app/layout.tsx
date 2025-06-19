@@ -2,14 +2,15 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { CartProvider } from '@/contexts/CartContext';
-import Header from '@/components/Header';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import ThemedHeader from '@/components/ThemedHeader';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'MangoMarket - Premium Bangladeshi Mangos',
-  description: 'Fresh, premium quality mangos delivered directly from Bangladeshi orchards to your doorstep',
-  keywords: 'mango, bangladeshi mango, fresh fruit, online shopping, delivery',
+  title: 'HoneyMarket - Premium Natural Products',
+  description: 'Fresh, premium quality natural products delivered directly from local producers to your doorstep',
+  keywords: 'honey, mango, natural products, organic, fresh, online shopping, delivery',
 };
 
 export default function RootLayout({
@@ -20,10 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <CartProvider>
-          <Header />
-          <main>{children}</main>
-        </CartProvider>
+        <ThemeProvider>
+          <CartProvider>
+            <ThemedHeader />
+            <main>{children}</main>
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
